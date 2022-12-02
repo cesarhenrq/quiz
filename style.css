@@ -1,0 +1,76 @@
+body {
+    font-size: 15pt;
+}
+
+.header {
+  background-color: #6950A1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-around;
+  color: white;
+  font-weight: bold;
+}
+
+.menu div {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+.registerQuests, .doQuiz, .listQuestionsSection, .completedQuiz, .editQuestions {
+  display: none;
+  margin-top: 5em;
+  width: 100%;
+  height: 100%;
+}
+
+.registerContainer, .row input, #doQuizContainer, .questionListed, #editQuestionsContainer{
+  border: 0.07em solid black;
+  border-radius: 0.3em;
+}
+
+.row label {
+  font-weight: bold;
+}
+
+.registerContainer, #doQuizContainer, .questionListed, #editQuestionContainer {
+  box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.25)
+
+}
+
+.registerContainer, .row, #doQuizContainer, #editQuestionsContainer{
+  padding: 1em;
+}
+
+.saveButton, #previousButton, #nextButton, .editButton {
+  background-color: #6950A1;
+  color: white;
+  font-weight: bold;
+  padding: 0.5em;
+  border: none;
+  border-radius: 2em;
+  width: 6em;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center
+}
+
+.questionTitle, .titleQuestionListed{
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.information {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+
