@@ -20,6 +20,7 @@ body {
 .menu div {
   padding-left: 0.5em;
   padding-right: 0.5em;
+  cursor:pointer;
 }
 
 .registerQuests, .doQuiz, .listQuestionsSection, .completedQuiz, .editQuestions {
@@ -36,6 +37,10 @@ body {
 
 .row label {
   font-weight: bold;
+}
+
+.openEditButton, .delButton, #closeEditModal {
+  cursor: pointer;
 }
 
 .registerContainer, #doQuizContainer, .questionListed, #editQuestionContainer {
@@ -57,7 +62,8 @@ body {
   width: 6em;
   margin: 0 auto;
   display: flex;
-  justify-content: center
+  justify-content: center;
+  cursor: pointer;
 }
 
 .questionTitle, .titleQuestionListed{

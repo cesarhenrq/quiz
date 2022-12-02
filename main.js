@@ -39,6 +39,10 @@ const editQuestions = document.querySelector('.editQuestions')
 
 const closeEditModal = document.getElementById('closeEditModal')
 
+const editButton = document.querySelector('.editButton')
+
+let questionID
+
 
 let questions = []
 
@@ -69,6 +73,20 @@ const deleteQuestion = async (id) => {
   await getQuestions()
   listQuestionsContainer.innerHTML = ''
   listQuestionOnPage()
+}
+
+const updateQuestion = async (id) => {
+  await fetch(`http://localhost:3000/questions/${id}`, {
+    method: "PUT",
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      "questionTitle": question.questionTitle,
+      "alternatives": question.alternatives
+    })
+  });
 }
 
 const restartInputs = (inputs) => {
@@ -103,18 +121,17 @@ const getQuestionDetails = (inputs) => {
   })
 }
 
-const editQuestionDetails = (inputs, questionEdit) => {
+const editQuestionDetails = (inputs, id) => {
   let auxiliarIndex1 = 0
   let auxiliarIndex2 = 0
   inputs.forEach((input, index) => {
     if (index === 0) {
-      input.value = questionEdit.questionTitle
+      input.value = questions[id].questionTitle
       } else if (index % 2 !== 0) {
-        console.log(questionEdit.alternatives.alternativeTitle[auxiliarIndex1])
-        input.value = questionEdit.alternatives.alternativeTitle[auxiliarIndex1]
+        input.value = questions[id].alternatives[auxiliarIndex1].alternativeTitle
         auxiliarIndex1++
       } else {
-        input.checked = questionEdit.alternatives.isCorrect[auxiliarIndex2]
+        input.checked = questions[id].alternatives[auxiliarIndex2].isCorrect
         auxiliarIndex2++
     }
   })
@@ -178,6 +195,7 @@ const addQuizQuestion = () => {
       `
   const nextButton = document.querySelector('#nextButton')
   const previousButton = document.querySelector('#previousButton')
+
   nextButton.addEventListener('click', () => {
     nextQuestion()
     addQuizQuestion()
@@ -223,10 +241,11 @@ const listQuestionOnPage = () => {
 
   const openEditButton = document.querySelectorAll('.openEditButton')
   openEditButton.forEach((button, index) => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
       closeModal(editQuestions)
       openModal(editQuestions)
-      editQuestionDetails(editInput, questions[index])
+      editQuestionDetails(editInput, index)
+      questionID = questions[index].id
     })
   })
 }
@@ -271,4 +290,10 @@ listQuestions.addEventListener('click', async (event) => {
 closeEditModal.addEventListener('click', () => {
   closeModal(listQuestionsSection)
   openModal(listQuestionsSection)
+})
+
+editButton.addEventListener('click', () => {
+  getQuestionDetails(editInput)
+  updateQuestion(questionID)
+  getQuestions()
 })
