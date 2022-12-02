@@ -22,9 +22,10 @@ const listQuestionsContainer = document.querySelector("#listQuestionsContainer")
 
 const saveButton = document.querySelector(' .saveButton')
 
-const registerInput = document.querySelectorAll('.registerInput')
-
 const editInput = document.querySelectorAll('.editInput')
+
+const registerInput = document.querySelectorAll('.registerInput')
+console.log(registerInput)
 
 const registerQuestion = document.querySelector('#registerQuestion')
 
@@ -35,6 +36,8 @@ const doQuestion = document.querySelector('#doQuestion')
 const doQuiz = document.querySelector('.doQuiz')
 
 const editQuestions = document.querySelector('.editQuestions')
+
+const closeEditModal = document.getElementById('closeEditModal')
 
 
 let questions = []
@@ -83,10 +86,8 @@ const restartInputs = (inputs) => {
 const getQuestionDetails = (inputs) => {
 
   let alternative;
-  question = new Question ()
-
+  question = new Question()
   inputs.forEach((input, index) => {
-
     if (index === 0) {
       question.questionTitle = input.value
     } else if (index % 2 !== 0) {
@@ -102,23 +103,19 @@ const getQuestionDetails = (inputs) => {
   })
 }
 
-const editQuestionDetails = (inputs) => {
-
-  let editAlternative;
-
+const editQuestionDetails = (inputs, questionEdit) => {
+  let auxiliarIndex1 = 0
+  let auxiliarIndex2 = 0
   inputs.forEach((input, index) => {
-
     if (index === 0) {
-      question.questionTitle = input.value
-    } else if (index % 2 !== 0) {
-      editAlternative = new Alternative()
-      editAlternative.alternativeTitle = input.value
-    } else {
-      editAlternative.isCorrect = input.checked
-    }
-
-    if (index % 2 === 0 && index > 0) {
-      question.alternatives.push(alternative)
+      input.value = questionEdit.questionTitle
+      } else if (index % 2 !== 0) {
+        console.log(questionEdit.alternatives.alternativeTitle[auxiliarIndex1])
+        input.value = questionEdit.alternatives.alternativeTitle[auxiliarIndex1]
+        auxiliarIndex1++
+      } else {
+        input.checked = questionEdit.alternatives.isCorrect[auxiliarIndex2]
+        auxiliarIndex2++
     }
   })
 }
@@ -216,23 +213,20 @@ const listQuestionOnPage = () => {
     </div>
     `
   })
-  
-  console.log(questions)
-  
+
   const delButton = document.querySelectorAll('.delButton')
   delButton.forEach((button, index) => {
-    console.log(questions[index])
     button.addEventListener('click', () => {
       deleteQuestion(questions[index].id)
     })
   })
-  
+
   const openEditButton = document.querySelectorAll('.openEditButton')
   openEditButton.forEach((button, index) => {
     button.addEventListener('click', () => {
       closeModal(editQuestions)
       openModal(editQuestions)
-      
+      editQuestionDetails(editInput, questions[index])
     })
   })
 }
@@ -264,12 +258,17 @@ doQuestion.addEventListener('click', async (event) => {
 })
 
 listQuestions.addEventListener('click', async (event) => {
-  listQuestionsContainer.innerHTML = ''
   questions = []
+  listQuestionsContainer.innerHTML = ''
   removeSubscription(listQuestions)
   addSubscription(listQuestions)
   closeModal(listQuestionsSection)
   openModal(listQuestionsSection)
   await getQuestions()
-  await listQuestionOnPage()
+  listQuestionOnPage()
+})
+
+closeEditModal.addEventListener('click', () => {
+  closeModal(listQuestionsSection)
+  openModal(listQuestionsSection)
 })
