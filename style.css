@@ -23,15 +23,15 @@ body {
   cursor:pointer;
 }
 
-.registerQuests, .doQuiz, .listQuestionsSection, .completedQuiz, .editQuestions {
+.registerQuests, .doQuiz, .listQuestionsSection, .editQuestions, .completedQuiz {
   display: none;
   margin-top: 5em;
   width: 100%;
   height: 100%;
 }
 
-.registerContainer, .row input, #doQuizContainer, .questionListed, #editQuestionsContainer{
-  border: 0.07em solid black;
+.registerContainer, .row input, #doQuizContainer, .questionListed, #editQuestionsContainer, #completedQuizContainer{
+  border: 0.07em solid #939393;
   border-radius: 0.3em;
 }
 
@@ -43,7 +43,7 @@ body {
   cursor: pointer;
 }
 
-.registerContainer, #doQuizContainer, .questionListed, #editQuestionContainer {
+.registerContainer, #doQuizContainer, .questionListed, #editQuestionContainer, #completedQuizContainer {
   box-shadow: 0em 0.5em 0.5em rgba(0, 0, 0, 0.25)
 
 }
@@ -78,5 +78,18 @@ body {
   align-items: center;
   font-weight: bold;
 }
+
+.col-1, #check-mark, #completedText, #quizResult {
+  display: flex;
+  justify-content: center;
+}
+
+#completedText, #quizResult {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+
+
 
 

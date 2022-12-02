@@ -8,9 +8,22 @@ class Alternative {
   isCorrect
 }
 
-let indexQuestion = 0;
+class Answer {
+  questionID;
+  answers = []
+}
 
-let question;
+let pointsCounter = 0
+
+let indexQuestion = 0
+
+let question
+
+let questionID
+
+let questions = []
+
+let answer
 
 const doQuizContainer = document.getElementById('doQuizContainer')
 
@@ -25,7 +38,6 @@ const saveButton = document.querySelector(' .saveButton')
 const editInput = document.querySelectorAll('.editInput')
 
 const registerInput = document.querySelectorAll('.registerInput')
-console.log(registerInput)
 
 const registerQuestion = document.querySelector('#registerQuestion')
 
@@ -41,10 +53,9 @@ const closeEditModal = document.getElementById('closeEditModal')
 
 const editButton = document.querySelector('.editButton')
 
-let questionID
+const completedQuiz = document.querySelector('.completedQuiz')
 
-
-let questions = []
+const quizResult = document.querySelector('#quizResult')
 
 const addQuestion = async () => {
   await fetch("http://localhost:3000/questions", {
@@ -137,12 +148,39 @@ const editQuestionDetails = (inputs, id) => {
   })
 }
 
+const getAnswerDetails = (inputs, id) => {
+  answer = new Answer()
+
+  answer.questionID = id
+  
+  inputs.forEach((input, index) => {
+    answer.answers.push(input.checked)
+  })
+}
+
+const evaluetedResult = () => {
+  let auxiliar = true
+  let auxiliar2 = 0
+
+  for (let index = 0; index < answer.answers.length; index++) {
+    if ((answer.answers[index]) === (questions[indexQuestion].alternatives[index].isCorrect)) {
+      auxiliar2++
+    }
+  }
+  
+  if (auxiliar2 === 4) {
+    pointsCounter++
+  }
+
+}
+
 const addSubscription = (menuOption) => {
   menuOption.style.textDecoration = "underline"
 }
 
 const removeSubscription = (menuOption) => {
-  document.querySelectorAll('.menuItem').forEach((item) => {
+  document.querySelectorAll('.menuItem')
+  .forEach((item) => {
     if (item.id !== menuOption) {
       item.style.textDecoration = "none"
     }
@@ -154,7 +192,8 @@ const openModal = (currentSection) => {
 }
 
 const closeModal = (currentSection) => {
-  document.querySelectorAll('section').forEach((section) => {
+  document.querySelectorAll('section')
+  .forEach((section) => {
     if (section.className !== currentSection) {
       section.style.display = "none"
     }
@@ -162,7 +201,10 @@ const closeModal = (currentSection) => {
 }
 
 const addQuizQuestion = () => {
-  doQuizContainer.innerHTML = `<div class="row questionTitle">${indexQuestion + 1}.${questions[indexQuestion].questionTitle}<div>`
+  doQuizContainer.innerHTML = `
+    <div class="row questionTitle">
+      ${indexQuestion + 1}.${questions[indexQuestion].questionTitle}
+    <div>`
 
   questions[indexQuestion].alternatives.forEach((alternative, index) => {
     doQuizContainer.innerHTML +=
@@ -172,7 +214,9 @@ const addQuizQuestion = () => {
         <input 
           id="${index + 1}" 
           type="radio" 
-          name="answer">
+          name="answer"
+          class="answerInput"
+          >
       </div>
       <div class="col-11">
         ${alternative.alternativeTitle}
@@ -182,7 +226,7 @@ const addQuizQuestion = () => {
   })
   doQuizContainer.innerHTML += `
       <div class="row">
-        <div class="col-4" id="previousButton">
+        <div class="col-4 previousButton" id="previousButton">
           ANTERIOR
         </div>
         <div class="col-4 information">
@@ -195,15 +239,27 @@ const addQuizQuestion = () => {
       `
   const nextButton = document.querySelector('#nextButton')
   const previousButton = document.querySelector('#previousButton')
+  const answerInput = document.querySelectorAll('.answerInput')
 
   nextButton.addEventListener('click', () => {
-    nextQuestion()
-    addQuizQuestion()
+    getAnswerDetails(answerInput, questions[indexQuestion].id)
+    evaluetedResult()
+    if (indexQuestion < questions.length - 1) {
+      nextQuestion()
+      addQuizQuestion()
+    } else if (indexQuestion = questions.length - 1) {
+      closeModal(completedQuiz)
+      quizResult.innerHTML = `Você acertou ${((pointsCounter / questions.length) * 100).toFixed(1)}% das questões`
+      openModal(completedQuiz)
+    }
   })
 
-  previousButton.addEventListener('click', () => {
-    previousQuestion()
-    addQuizQuestion()
+  previousButton.addEventListener('click', (event) => {
+    if (indexQuestion > 0) {
+      pointsCounter--
+      previousQuestion()
+      addQuizQuestion()
+    } 
   })
 }
 
@@ -256,6 +312,7 @@ registerQuestion.addEventListener('click', (event) => {
   closeModal(registerQuests)
   openModal(registerQuests)
   listQuestionsContainer.innerHTML = ''
+  pointsCounter = 0
 })
 
 saveButton.addEventListener('click', async (event) => {
@@ -266,6 +323,7 @@ saveButton.addEventListener('click', async (event) => {
 })
 
 doQuestion.addEventListener('click', async (event) => {
+  indexQuestion = 0
   questions = []
   listQuestionsContainer.innerHTML = ''
   removeSubscription(doQuestion)
@@ -274,6 +332,7 @@ doQuestion.addEventListener('click', async (event) => {
   openModal(doQuiz)
   await getQuestions()
   addQuizQuestion()
+  pointsCounter = 0
 })
 
 listQuestions.addEventListener('click', async (event) => {
@@ -285,6 +344,7 @@ listQuestions.addEventListener('click', async (event) => {
   openModal(listQuestionsSection)
   await getQuestions()
   listQuestionOnPage()
+  pointsCounter = 0
 })
 
 closeEditModal.addEventListener('click', () => {
